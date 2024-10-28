@@ -1,9 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
  <%@page import="mvc.vo.BoardVo" %>   
- 
  <!--  request.getAttribute()는 서블릿이나 다른 JSP 페이지에서 전달된 객체를 가져올 때 사용하는 메서드 -->
- <%
+ <% 
  BoardVo bv = (BoardVo)request.getAttribute("bv");   //강제형변환  양쪽형을 맞춰준다 
+ 
+ String memberName="";
+ if(session.getAttribute("memberName") != null) {
+	 memberName = (String)session.getAttribute("memberName");
+ }
  %>   
     
 <!DOCTYPE html>
@@ -16,31 +20,28 @@
 <script src="https://code.jquery.com/jquery-latest.min.js"></script> 
 <script> 
 
-function check() {
-	  
-	  // 유효성 검사하기
-	  let fm = document.frm;
-	  
-	  if (fm.content.value == "") {
-		  alert("내용을 입력해주세요");
-		  fm.content.focus();
-		  return;
-	  }
-	  
-	  let ans = confirm("저장하시겠습니까?");
-	  
-	  if (ans == true) {
-		  fm.action="./detail.html";
-		  fm.method="post";
-		  fm.submit();
-	  }	  
-	  
-	  return;
-}
 
+// 제이쿼리로 함수 만들기 
+$.boardCommentList = function(){  // 보드코멘트리스트 라는 이름의 함수다.
+alert("fff");
+$.ajax({	// ajax 형식
+	type : "get",	//전송방식 겟방식
+	url : "<%=request.getContextPath()%>/comment/commentList.aws?bidx=<%=bv.getBidx()%>", 
+	dataType : "json",	// json타입은 문서에서 {"키값" : "value값","키값2" : "value값2"}
+	success : function(result){	//결과가 넘어와서 성공했을 때 받는 영역
+		
+		alert("전송 성공 테스트");
+	
+	},
+	error : function() {	// 결과가 실패했을 때 받는 영역 
+		alert("전송 실패 테스트");
+	}	
+ });
+}
 
 // 추천하기 
 $(document).ready(function(){
+	$.boardCommentList();
 	
 	$("#btn").click(function(){
 	//alert("추천버튼 클릭");
@@ -62,13 +63,54 @@ $(document).ready(function(){
 	});
 	
 	});
+	
+	
+	$("#cmtBtn").click(function(){   //댓글쓰기 유효성 검사 
 		
-});
+		let loginCheck = "<%=session.getAttribute("midx")%>";
+		if (loginCheck == "" || loginCheck == "null" || loginCheck == null) {
+			alert("로그인을 해주세요");
+			return;
+		}
+		
+		let cwriter = $("#cwriter").val();
+		let ccontents = $("#ccontents").val();
+		
+		if(cwriter =="") {
+			alert("작성자를 입력해주세요");
+			$("#cwriter").focus();
+			return;
+		}else if(ccontents =="") {
+			alert("내용을 입력해주세요");
+			$("#ccontents").focus();
+			return;
+		}
+		
+		$.ajax({	// ajax 형식
+			type : "post",	//전송방식 겟방식
+			url : "<%=request.getContextPath()%>/comment/commentWriteAction.aws", 
+			data : {"cwriter" : cwriter, 
+				    "ccontents" : ccontents, 
+				    "bidx" :"<%=bv.getBidx()%>",
+				    "midx" : "<%=session.getAttribute("midx")%>"
+				    },
+			dataType : "json",	// json타입은 문서에서 {"키값" : "value값","키값2" : "value값2"}
+			success : function(result){	//결과가 넘어와서 성공했을 때 받는 영역
+				
+				alert("전송 성공 테스트");
+			
+				var str = "("+result.value+")";
+				alert(str);
+			},
+			error : function() {	// 결과가 실패했을 때 받는 영역 
+				alert("전송 실패 테스트");
+			}	
+		});
+	});
+	
+});	
 
-
-
-
-
+	
 </script>
 </head>
 <body>
@@ -77,7 +119,7 @@ $(document).ready(function(){
 </header>
 
 <article class="detailContents">
-	<h2 class="contentTitle"><%=bv.getSubject() %> (조회수:<%=bv.getViewcnt() %>)
+	<h2 class="contentTitle"><%=bv.getSubject()%> (조회수:<%=bv.getViewcnt() %>)
 	<input type="button" id="btn" value="추천(<%=bv.getRecom()%>)">
 	</h2>
 	<p class="write"><%=bv.getWriter() %> (<%=bv.getWriteday() %>)</p>
@@ -107,9 +149,10 @@ $(document).ready(function(){
 
 <article class="commentContents">
 	<form name="frm">
-		<p class="commentWriter">admin</p>	
-		<input type="text" name="content">
-		<button type="button" class="replyBtn" onclick="check();">댓글쓰기</button>
+		<p class="commentWriter"><input type="text" id="cwriter" name="cwriter" value="<%=memberName%>" readonly="readonly" style="width:80px;border:0px;">
+		</p>	
+		<input type="text" id="ccontents" name="ccontents">
+		<button type="button" id="cmtBtn" class="replyBtn">댓글쓰기</button>
 	</form>
 	
 	

@@ -28,9 +28,11 @@ public class FrontController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
 		
+		
+		response.setHeader("Content-Type", "text/html;charset=utf-8");
 		// 한글깨짐 방지 
-		request.setCharacterEncoding("UTF-8");
-		response.setCharacterEncoding("text/html;charset=UTF-8");
+	//	request.setCharacterEncoding("UTF-8");
+	//	response.setCharacterEncoding("text/html;charset=UTF-8");
 		
 		
 		String uri = request.getRequestURI(); // 전체주소 가져오기
@@ -41,11 +43,12 @@ public class FrontController extends HttpServlet {
 		if (entity[1].equals("member")) {
 			MemberController mc = new MemberController(entity[2]);
 			mc.doGet(request, response);
-			
-			
 		}else if(entity[1].equals("board")) {
 			BoardController bc = new BoardController(entity[2]);  // 보드 컨트롤러로 가게끔 설정한거다
 			bc.doGet(request, response);
+		}else if(entity[1].equals("comment")) {
+			CommentController cc = new CommentController(entity[2]);  
+			cc.doGet(request, response);
 			
 		}
 	}
