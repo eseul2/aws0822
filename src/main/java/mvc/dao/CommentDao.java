@@ -48,12 +48,17 @@ public class CommentDao {
 				String ccontents = rs.getString("ccontents");
 				String cwriter = rs.getString("cwriter");
 				String writeday = rs.getString("writeday");
-		
+				String delyn = rs.getString("delyn");
+				int midx = rs.getInt("midx");
+				
 				CommentVo cv = new CommentVo();	// 13. 첫 행부터 cv에 옮겨담기
 				
+				cv.setCidx(cidx);
 				cv.setCcontents(ccontents);
 				cv.setCwriter(cwriter);
 				cv.setWriteday(writeday); 
+				cv.setDelyn(delyn);
+				cv.setMidx(midx);
 				alist.add(cv);   // 14. ArrayList 객체에 bv값을 하나씩 넣는다.
 			}
 		} catch (SQLException e) {
@@ -70,9 +75,7 @@ public class CommentDao {
 		return alist; // alist에 값을 담는다.
 	} 
 	 
-	
-	
-	//17. 이제 메소드 만든걸 컨트롤러에서 불러야겠죠?? 컨트롤러로 갑니다
+
 	
 		/*
 	// 페이지 갯수를 뽑아내는거니까 int형
@@ -154,24 +157,21 @@ public class CommentDao {
 		}	
 		return value;
 	}
-}
+
 	
 	
 	
 	
-		/*
-	 // 게시물 삭제 메소드 
-	public int commentDelete(int bidx ,String password) {  
 		
+	 // 게시물 삭제 메소드 
+	public int commentDelete(int cidx) {  
 		
 		int value = 0;
-		String sql = "update board set delyn='Y' where bidx = ? and password=?"; //특정 bidx를 가진 게시글의 delyn 컬럼을 'Y'로 업데이트
+		String sql = "update comment set delyn='Y' where cidx = ?"; //특정 cidx를 가진 게시글의 delyn 컬럼을 'Y'로 업데이트
 	
-		
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1,bidx);
-			pstmt.setString(2,password);
+			pstmt.setInt(1,cidx);
 			value = pstmt.executeUpdate(); 
 			
 		} catch (SQLException e) {
@@ -186,7 +186,8 @@ public class CommentDao {
 		}		
 		return value;
 	}
-	*/
+	
+	}
 
 	
 

@@ -14,10 +14,11 @@ table {
 	margin : auto; 
 }
 
-input[type="text"] {
-    width: 500px;
+input[name="subject"] {
+     width: 500px;
     height: 30px;
 }
+
 
 textarea {
     width: 500px;
@@ -33,6 +34,8 @@ button {
     width: 50px;
     height: 30px;
     font-size: 15px;
+    background-color: black;
+    color: white; /* 글씨 색을 흰색으로 설정 */
 }
 
 
@@ -41,6 +44,7 @@ button {
     height: 20px;
    
 }
+
 
 </style>
 </head>
@@ -86,7 +90,7 @@ function check() {
 
 <form name="frm">
 
-<h2>글쓰기</h2>
+<h2 style="text-align:center">글쓰기</h2>
 
 <hr>
 
@@ -104,10 +108,10 @@ function check() {
 		<td><textarea placeholder="내용을 입력하세요" name="contents"></textarea></td>
 	</tr>
 	<tr>
-		<td style="text-align:center">작성자<input type="text" name="writer" ></td>
+		<td style="text-align:center">작성자<input type="text" name="writer" style="width: 150px;" ></td>
 	</tr>
 	<tr>
-		<td style="text-align:center">비밀번호<input type="password" name="password"></td>
+		<td style="text-align:center">비밀번호<input type="password" name="password" style="width: 150px;"></td>
 	</tr>
 	<tr>
 		<td>첨부파일<input type="file" name="filename"></td>

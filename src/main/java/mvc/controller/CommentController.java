@@ -63,6 +63,9 @@ public class CommentController extends HttpServlet {
 			String cwriter ="";
 			String ccontents="";
 			String writeday="";
+			String delyn = "";
+			int midx = 0;
+			
 			
 			String str = "";
 			for(int i=0; i<alist.size(); i++) {
@@ -71,6 +74,8 @@ public class CommentController extends HttpServlet {
 				cwriter = alist.get(i).getCwriter();
 				ccontents = alist.get(i).getCcontents();
 				writeday = alist.get(i).getWriteday();
+				delyn = alist.get(i).getDelyn();
+				midx = alist.get(i).getMidx();
 				
 				String cma ="";
 				if(i == alist.size()-1) {
@@ -79,7 +84,7 @@ public class CommentController extends HttpServlet {
 					cma=",";
 				}
 				
-				str = str + "{ \"cidx\" : \""+cidx+"\", \"cwriter\" : \""+cwriter+"\", \"ccontents\":\""+ccontents+"\", \"writeday\":\""+writeday+"\"},";
+				str = str + "{ \"cidx\" : \""+cidx+"\", \"cwriter\" : \""+cwriter+"\", \"ccontents\":\""+ccontents+"\", \"writeday\":\""+writeday+"\",\"delyn\":\""+delyn+"\",\"midx\":\""+midx+"\"}"+cma;
 			}
 				PrintWriter out = response.getWriter();
 				out.println("["+str+"]");  // 대괄호 안에 str 애들을 다 데리고 간다. 
@@ -112,27 +117,21 @@ public class CommentController extends HttpServlet {
 				String str = "{ \"value\" : \""+value+"\" }";
 				out.println(str);
 			}
-		
+			
 			else if (location.equals("commentDeleteAction.aws")) {
-			/*	
-				String bidx = request.getParameter("bidx");
-				String password = request.getParameter("password");
 				
-				//처리하기
-				BoardDao bd = new BoardDao();
-				int value = bd.boardDelete(Integer.parseInt(bidx), password);   // 0,1
-				System.out.println("value"+value);
+				String cidx = request.getParameter("cidx");
+				System.out.println("cidx" + cidx);  // 넘어왔는지 반드시 디버깅 찍어봐라
 				
-				paramMethod="S";
+				// delyn을 Y로 업데이트 하는 메소드를 만들어서 호출한다. 
+				CommentDao cd = new CommentDao();
+				int value = cd.commentDelete(Integer.parseInt(cidx));
 				
-				if (value ==1) {				
-					// 성공적으로 삭제된 경우 게시판 목록으로 이동
-					url=request.getContextPath()+"/board/boardList.aws";
-				}else {				
-					// 비밀번호가 틀렸을 때 메시지를 설정
-					url=request.getContextPath()+"/board/boardDelete.aws?bidx="+bidx;						
-				}
-		*/
+				// 그리고나서 화면에 실행성공 여부를 json 타입으로 보여준다. 
+				PrintWriter out = response.getWriter();
+				String str = "{ \"value\" : \""+value+"\" }";
+				
+				out.println(str);
 			}
 		
 	
